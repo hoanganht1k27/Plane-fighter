@@ -17,3 +17,11 @@ canvas {
     font-size: 30px;
     outline: none;
 }
+
+#left {
+	background-color: red;
+}
+
+#right {
+	background-color: blue;
+}
