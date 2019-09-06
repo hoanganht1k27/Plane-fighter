@@ -8,6 +8,9 @@ var game = function() {
 	this.plane = null;
 	this.moveRight = false;
 	this.moveLeft = false;
+	this.resume = true;
+	this.pause = false;
+	this.gameOver = false;
 
 	var self = this;
 
@@ -59,12 +62,33 @@ var game = function() {
 		document.getElementById('right').addEventListener('touchend', () => {
 			this.moveRight = false;
 		})
+
+		document.getElementById('resume').addEventListener('click', () => {
+			this.resume = true;
+			this.pause = false;
+		})
+
+		document.getElementById('pause').addEventListener('click', () => {
+			this.resume = false;
+			this.pause = true;
+		})
 	}
 
 	this.loop = function() {
-		self.update();
-		self.draw();
+		if(self.resume) {
+			self.update();
+			self.draw();
+			self.checkGameOver();	
+		}
 		setTimeout(self.loop, 20);
+	}
+
+	this.checkGameOver = function() {
+		this.gameOver = this.plane.bullet.gameOver;
+		if(this.gameOver) {
+			alert('game over');
+			location.reload(false);
+		}
 	}
 
 	this.update = function() {

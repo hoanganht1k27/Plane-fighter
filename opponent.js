@@ -1,10 +1,12 @@
-var opponent = function(bullet) {
+var Opponent = function(bullet) {
 	this.game = bullet.game;
 	this.x = 0;
 	this.y = 0;
 	this.opponentSize = 20;
 	this.blood = 5;
 	this.unitBlood = this.opponentSize / this.blood;
+	this.colorOptions = new Array('#4C4B4C', '#B20DB2', '#270AC6', '#C6210A', '#E8E50F', '#0FE8E5', '#0AF029', '#F5860D');
+	this.color = null;
 
 	var self = this;
 
@@ -12,11 +14,13 @@ var opponent = function(bullet) {
 		this.x = Math.floor(Math.random() * (GAME_WIDTH - this.opponentSize));
 		this.y = 0;
 		this.blood = 5;
+		let id = Math.floor(Math.random() * (this.colorOptions.length - 1));
+		this.color = this.colorOptions[id];
 	}
 
 	this.update = function() {
 		this.clearScreen();
-		this.y++;
+		this.y ++;
 	}
 
 	this.clearScreen = function() {
@@ -32,7 +36,7 @@ var opponent = function(bullet) {
 
 	this.draw = function() {
 		this.drawBlood();
-		this.game.context.fillStyle = '#FC0303';
+		this.game.context.fillStyle = this.color;
 		this.game.context.fillRect(self.x, self.y, self.opponentSize, self.opponentSize);
 	}
 }

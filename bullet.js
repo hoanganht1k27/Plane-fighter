@@ -6,21 +6,28 @@ var bullet = function(plane) {
 	this.waiting = 0;
 	this.bulletSize = 5;
 	this.color = new Array('#03312E', '#790A39', '#1C790A', '#791C0A', '#E50DBF', '#3605F2');
-	this.opponent = null;
-	this.opponentAlive = true;
-	this.gameOver = false;	
+	this.gameOver = false;
+	this.opponentLevel = 1;
+	this.bulletLevel = 1;
+	this.opponent = null;	
+	this.score = 0;
+	this.scoreInc = 0;
 
 	this.init = function() {
 		this.matrix = new Array();
-		this.opponent = new opponent(this);
-		this.opponent.init();
+		this.opponent = new Array();
+		let opponent = new Opponent(this);
+		opponent.init();
+		this.opponent.push(opponent);
 	}
 
 	this.update = function() {
-		this.opponent.update();
-		if(this.opponent.y >= GAME_HEIGHT) {
-			this.refreshOpponent();
-		}
+		this.opponent.map(el => {
+			el.update();
+		})
+
+		this.checkDie();
+
 		let keep = new Object();
 		keep.x = this.plane.x + DOT_SIZE / 2 - 2;
 		keep.y = this.plane.y;
@@ -43,33 +50,55 @@ var bullet = function(plane) {
 			}
 		}
 
-		if(!this.opponentAlive) {
-			this.refreshOpponent();
-			this.opponentAlive = true;
+		this.updateOpponent();
+	}
+
+	this.updateLevel = function() {
+		if(this.scoreInc == this.opponentLevel * this.opponentLevel * this.opponentLevel) {
+			this.opponentLevel++;
+			this.scoreInc = 0;	
+		}
+	}
+
+	this.updateOpponent = function() {
+		while(this.opponent.length < this.opponentLevel) {
+			let opponent = new Opponent(this);
+			opponent.init();
+			this.opponent.push(opponent);
 		}
 	}
 
 	this.checkHit = function(el) {
 		let x = el.x, y = el.y;
-		let u = this.opponent.x, v = this.opponent.y;
-		let t1 = false, t2 = false;
-		if(x + 5 > u && x < u + 20) t1 = true;
-		if(y <= v + 20 && y + 5 > v + 20) t2 = true;
-		if(t1 && t2) {
-			this.opponent.blood--;
-			if(this.opponent.blood == 0) {
-				this.opponentAlive = false;
+
+		this.opponent.map((opponent, index) => {
+			let u = opponent.x, v = opponent.y;
+			let t1 = false, t2 = false;
+			if(x + 5 > u && x < u + 20) t1 = true;
+			if(y <= v + 20 && y + 5 > v + 20) t2 = true;
+			if(t1 && t2) {
+				this.opponent[index].blood--;
+				if(this.opponent[index].blood == 0) {
+					this.score++;
+					document.getElementById('score').innerHTML = "Score: " + this.score;
+					this.scoreInc++;
+					this.updateLevel();
+					this.opponent.splice(index, 1);
+				}
 			}
-		}
+		})
 	}
 
 	this.checkDie = function() {
-
+		this.opponent.map(el => {
+			if(el.y + el.opponentSize >= GAME_HEIGHT) {
+				this.gameOver = true;
+			}
+		})
 	}
 
 	this.refreshOpponent = function() {
-		this.opponent = new opponent(this);
-		this.opponent.init();
+		
 	}
 
 	this.clearScreen = function(el) {
@@ -87,6 +116,9 @@ var bullet = function(plane) {
 			this.game.context.fillStyle = this.color[id];
 			this.game.context.fillRect(x, y, this.bulletSize, this.bulletSize);
 		});
-		this.opponent.draw();
+
+		this.opponent.map(el => {
+			el.draw();
+		})
 	}
 }

@@ -25,3 +25,25 @@ canvas {
 #right {
 	background-color: blue;
 }
+
+@media only screen and (max-width: 400px) {
+	body {
+		transform: scale(2);
+	}
+}
+
+.pause-container {
+    padding: 50px;
+    text-align: center;
+}
+
+.pause-container button {
+    padding: 20px;
+}
+
+.score-container {
+	display: inline-block;
+	position: fixed;
+	top: 10px;
+	left: 20%;
+}
