@@ -8,7 +8,7 @@ canvas {
 }
 
 .controler {
-    padding: 50px;
+    padding: 20px 50px;
     text-align: center;
 }
 
@@ -16,11 +16,11 @@ canvas {
     padding: 30px;
     font-size: 30px;
     outline: none;
-    margin-right: 100px;
 }
 
 #left {
 	background-color: red;
+	margin-right: 150px;
 }
 
 #right {
@@ -34,13 +34,16 @@ canvas {
 }
 
 .pause-container {
-    padding: 50px;
+    padding: 20px 50px;
     text-align: center;
 }
 
 .pause-container button {
     padding: 20px;
-    margin-right: 100px;
+}
+
+#pause, #replay {
+	margin-right: 75px;
 }
 
 .score-container {

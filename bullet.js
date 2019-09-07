@@ -19,6 +19,11 @@ var bullet = function(plane) {
 		let opponent = new Opponent(this);
 		opponent.init();
 		this.opponent.push(opponent);
+		this.waiting = 0;
+		this.score = 0;
+		this.scoreInc = 0;
+		this.gameOver = false;
+		this.opponentLevel = 1;
 	}
 
 	this.update = function() {
@@ -31,6 +36,8 @@ var bullet = function(plane) {
 		let keep = new Object();
 		keep.x = this.plane.x + DOT_SIZE / 2 - 2;
 		keep.y = this.plane.y;
+		let id = Math.floor(Math.random() * 5);
+		keep.color = this.color[id];
 		if(this.waiting == this.speed)
 		{
 			this.matrix.unshift(keep);
@@ -112,8 +119,7 @@ var bullet = function(plane) {
 		this.matrix.map(el => {
 			let x = el.x;
 			let y = el.y;
-			let id = Math.floor(Math.random() * 5);
-			this.game.context.fillStyle = this.color[id];
+			this.game.context.fillStyle = el.color;
 			this.game.context.fillRect(x, y, this.bulletSize, this.bulletSize);
 		});
 

@@ -11,6 +11,7 @@ var game = function() {
 	this.resume = true;
 	this.pause = false;
 	this.gameOver = false;
+	this.gameOverImg = null;
 
 	var self = this;
 
@@ -24,6 +25,9 @@ var game = function() {
 
 		this.plane = new plane(this);
 		this.plane.init();
+
+		this.gameOverImg = new Image();
+		this.gameOverImg.src = 'images/gameOver.jpg';
 
 		this.listenEvent();
 
@@ -64,6 +68,7 @@ var game = function() {
 		})
 
 		document.getElementById('resume').addEventListener('click', () => {
+			if(this.gameOver) return;
 			this.resume = true;
 			this.pause = false;
 		})
@@ -72,6 +77,25 @@ var game = function() {
 			this.resume = false;
 			this.pause = true;
 		})
+
+		document.getElementById('replay').addEventListener('click', () => {
+			this.resetGame();
+		})
+	}
+
+	this.resetGame = function() {
+		document.getElementById('score').innerHTML = "Score: 0";
+
+		this.context.fillStyle = '#FFFFFF';
+		this.context.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+
+		this.plane = new plane(this);
+		this.plane.init();
+
+		this.resume = true;
+	    this.pause = false;
+
+	    this.gameOver = false;
 	}
 
 	this.loop = function() {
@@ -86,14 +110,14 @@ var game = function() {
 	this.checkGameOver = function() {
 		this.gameOver = this.plane.bullet.gameOver;
 		if(this.gameOver) {
-			alert('game over');
-			location.reload(false);
+			this.context.drawImage(this.gameOverImg, 0, 0);
+			this.pause = true;
+			this.resume = false;
 		}
 	}
 
 	this.update = function() {
 		this.plane.update();
-		// console.log('update');
 	}
 
 	this.draw = function() {
