@@ -16,6 +16,7 @@ canvas {
     padding: 30px;
     font-size: 30px;
     outline: none;
+    margin-right: 100px;
 }
 
 #left {
@@ -39,6 +40,7 @@ canvas {
 
 .pause-container button {
     padding: 20px;
+    margin-right: 100px;
 }
 
 .score-container {
