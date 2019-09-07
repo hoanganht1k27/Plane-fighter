@@ -40,8 +40,6 @@ var plane = function(game) {
 	}
 
 	this.draw = function() {
-		// this.game.context.fillStyle = '#282923';
-		// this.game.context.fillRect(self.x, self.y, DOT_SIZE, DOT_SIZE);
 		if(this.loaded) {
 			this.game.context.drawImage(self.main, self.x, self.y);
 		    this.bullet.draw();
