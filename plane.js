@@ -41,8 +41,8 @@ var plane = function(game) {
 
 	this.draw = function() {
 		if(this.loaded) {
+			this.bullet.draw();
 			this.game.context.drawImage(self.main, self.x, self.y);
-		    this.bullet.draw();
 		}
 	}
 }
