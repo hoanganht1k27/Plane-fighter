@@ -2,7 +2,7 @@ var bullet = function(plane) {
 	this.game = plane.game;
 	this.plane = plane;
 	this.matrix = null;
-	this.speed = 10;
+	this.speed = 6;
 	this.waiting = 0;
 	this.bulletSize = 5;
 	this.color = new Array('#03312E', '#790A39', '#1C790A', '#791C0A', '#E50DBF', '#3605F2');
@@ -14,6 +14,10 @@ var bullet = function(plane) {
 	this.scoreInc = 0;
 	this.empower = null;
 	this.gift = null;
+	this.isBoss = false;
+	this.timeToBoss = 225;
+	this.boss = null;
+	this.boss1Score = 100;
 
 	this.init = function() {
 		this.matrix = new Array();
@@ -26,6 +30,9 @@ var bullet = function(plane) {
 		this.opponentLevel = 1;
 		this.empower = new empower(this);
 		this.empower.init();
+
+		this.boss = new boss1(this);
+		this.boss.init();
 	}
 
 	this.update = function() {
@@ -48,8 +55,11 @@ var bullet = function(plane) {
 		}
 		this.matrix.map((el, i) => {
 			this.clearScreen(this.matrix[i]);
-			this.matrix[i].y -= 2;
+			this.matrix[i].y -= 4;
 			this.checkHit(this.matrix[i], i);
+			if(this.isBoss) {
+				this.checkHitBoss(this.matrix[i], i);
+			}
 		})
 		this.waiting += 2;
 		while(this.matrix.length) {
@@ -60,7 +70,11 @@ var bullet = function(plane) {
 			}
 		}
 
-		this.updateOpponent();
+		if(!this.isBoss)
+			this.updateOpponent();
+		else {
+			this.boss.update();
+		}
 	}
 
 	this.addBullet = function() {
@@ -81,11 +95,11 @@ var bullet = function(plane) {
 		opponent.init();
 		opponent.blood = this.opponentLevel + 4;
 		if(this.opponentLevel >= 4) {
-			opponent.blood += 4;
+			opponent.blood += 2;
 		}
 
 		if(this.opponentLevel >= 5) {
-			opponent.blood += 4;
+			opponent.blood += 2;
 		}
 		opponent.unitBlood = Math.floor(opponent.opponentSize / opponent.blood);
 		this.opponent.push(opponent);
@@ -114,9 +128,6 @@ var bullet = function(plane) {
 		if(this.scoreInc == this.opponentLevel * this.opponentLevel * this.opponentLevel) {
 			this.opponentLevel++;
 			this.scoreInc = 0;	
-		}
-
-		if(this.score == 10 || this.score == 36 || this.score == 100) {
 			this.gift = this.empower;
 			this.gift.new();
 		}
@@ -136,13 +147,14 @@ var bullet = function(plane) {
 			let t1 = false, t2 = false;
 			if(x + 5 > u && x < u + 20) t1 = true;
 			if(y <= v + 20 && y + 5 > v + 20) t2 = true;
-			if(t1 && t2) {
-				// this.matrix.splice(i, 1);
+			if(t1 && t2 && el.color != '#FFFFFF') {
+				this.matrix[i].color = '#FFFFFF';
 				// console.log(i);
 				this.opponent[index].blood--;
 				if(this.opponent[index].blood == 0) {
 					this.score++;
 					document.getElementById('score').innerHTML = "Score: " + this.score;
+					if(this.score == this.timeToBoss) this.isBoss = true;
 					this.scoreInc++;
 					this.updateLevel();
 					this.opponent.splice(index, 1);
@@ -157,6 +169,31 @@ var bullet = function(plane) {
 				this.gameOver = true;
 			}
 		})
+	}
+
+	this.checkBossDie = function() {
+		if(this.boss.blood == 0) {
+			this.isBoss = false;
+			this.score += this.boss1Score;
+			document.getElementById('score').innerHTML = "Score: " + this.score;
+			this.boss.clearScreen();
+		}
+	}
+
+	this.checkHitBoss = function(el, i) {
+		let x = el.x, y = el.y;
+		let u = this.boss.x, v = this.boss.y;
+		let t1 = false, t2 = false;
+		if(x + 5 > u && x < u + this.boss.bossSize) t1 = true;
+		if(y <= v + this.boss.bossSize && y + 5 > v + this.boss.bossSize) t2 = true;
+		if(t1 && t2 && el.color != '#FFFFFF') {
+			if(this.boss.blood >= 1)
+			{
+				this.boss.blood--;
+				this.matrix[i].color = '#FFFFFF';
+			}
+			this.checkBossDie();
+		}
 	}
 
 	this.clearScreen = function(el) {
@@ -181,5 +218,9 @@ var bullet = function(plane) {
 		this.opponent.map(el => {
 			el.draw();
 		})
+
+		if(this.isBoss) {
+			this.boss.draw();
+		}
 	}
 }
