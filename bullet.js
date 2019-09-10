@@ -56,6 +56,7 @@ var bullet = function(plane) {
 		this.matrix.map((el, i) => {
 			this.clearScreen(this.matrix[i]);
 			this.matrix[i].y -= 4;
+			this.matrix[i].x += this.matrix[i].trajectoryX;
 			this.checkHit(this.matrix[i], i);
 			if(this.isBoss) {
 				this.checkHitBoss(this.matrix[i], i);
@@ -78,14 +79,63 @@ var bullet = function(plane) {
 	}
 
 	this.addBullet = function() {
-		let kc = Math.floor((DOT_SIZE - this.bulletLevel * this.bulletSize) / (this.bulletLevel + 1));
-		for(let i = 1; i <= this.bulletLevel; i++) {
+		let bulletLevel = this.bulletLevel;
+		if(this.bulletLevel >= 5) {
+			if(this.bulletLevel == 5 || this.bulletLevel == 6) bulletLevel -= 2;
+			else bulletLevel -= 4;
+		}
+		let kc = Math.floor((DOT_SIZE - bulletLevel * this.bulletSize) / (bulletLevel + 1));
+		for(let i = 1; i <= bulletLevel; i++) {
 			let keep = new Object();
 			keep.x = this.plane.x + kc * i + this.bulletSize * (i - 1);
 			keep.y = this.plane.y;
+			keep.trajectoryX = 0;
 			let id = Math.floor(Math.random() * (this.color.length - 1));
 			keep.color = this.color[id];
 			this.matrix.unshift(keep);
+		}
+		if(this.bulletLevel == 5 || this.bulletLevel == 6) {
+			for(let i = 0; i <= 1; i++) {
+				let keep = new Object();
+				keep.y = this.plane.y;
+				if(i == 0) {
+					keep.x = this.plane.x;
+					keep.trajectoryX = -1;
+				}
+				else {
+					keep.x = this.plane.x + DOT_SIZE - this.bulletSize;
+					keep.trajectoryX = 1;
+				}
+				let id = Math.floor(Math.random() * (this.color.length - 1));
+				keep.color = this.color[id];
+				this.matrix.unshift(keep);
+			}
+		}
+
+		if(this.bulletLevel == 7 || this.bulletLevel == 8) {
+			for(let i = 0; i <= 3; i++) {
+				let keep = new Object();
+				keep.y = this.plane.y;
+				if(i == 0 || i == 1) {
+					keep.x = this.plane.x;
+				}
+				else {
+					keep.x = this.plane.x + DOT_SIZE - this.bulletSize;
+				}
+				if(i == 0) {
+					keep.trajectoryX = -2;
+				}
+				else if(i == 1) {
+					keep.trajectoryX = -1;
+				}
+				else if(i == 2) {
+					keep.trajectoryX = 1;
+				}
+				else keep.trajectoryX = 2;
+				let id = Math.floor(Math.random() * (this.color.length - 1));
+				keep.color = this.color[id];
+				this.matrix.unshift(keep);
+			}
 		}
 		this.waiting = 0;
 	}

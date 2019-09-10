@@ -29,7 +29,14 @@ var Opponent = function(bullet) {
 	}
 
 	this.drawBlood = function() {
-		this.game.context.fillStyle = '#36EA03';
+		if(this.blood <= 2) {
+			this.game.context.fillStyle = '#f71515';
+		}
+		else if(this.blood <= 5) {
+			this.game.context.fillStyle = '#a7f70b';
+		}
+		else this.game.context.fillStyle = '#36EA03';
+
 		this.game.context.fillRect(self.x, self.y - 10, this.blood * this.unitBlood, 5);
 	}
 

@@ -17,6 +17,7 @@ var boss1 = function(bullet) {
 	this.speedY = 2;
 	this.waitingY = 0;
 	this.tpY = 80;
+	this.trajectory = new Array(-2, -1, 0, 1, 2);
 
 	this.init = function() {
 		this.main = new Image();
@@ -79,10 +80,19 @@ var boss1 = function(bullet) {
 		if(v + this.danSize >= y && v <= y + DOT_SIZE) t2 = true;
 		if(t1 && t2) {
 			this.bullet.gameOver = true;
+			this.clearScreen();
+			this.dan.map(el => {
+				this.clearDan(el);
+			})
 			return;
 		}
 
 		if(u + this.danSize <= 0 || v >= GAME_HEIGHT || u >= GAME_WIDTH) this.dan.splice(i, 1);
+	}
+
+	this.randomMove = function() {
+		let id = Math.floor(Math.random() * 4);
+		return this.trajectory[id];
 	}
 
 	this.addDan = function() {
@@ -90,7 +100,7 @@ var boss1 = function(bullet) {
 		k1.x = this.x;
 		k1.y = this.y + this.bossSize;
 		k1.color = '#050505';
-		k1.incX = -2;
+		k1.incX = this.randomMove();
 		k1.incY = this.speedY;
 		this.dan.unshift(k1);
 
@@ -98,7 +108,7 @@ var boss1 = function(bullet) {
 		k2.x = this.x + this.danSize;
 		k2.y = this.y + this.bossSize;
 		k2.color = '#050505';
-		k2.incX = -1;
+		k2.incX = this.randomMove();
 		k2.incY = this.speedY;
 		this.dan.unshift(k2);
 
@@ -106,7 +116,7 @@ var boss1 = function(bullet) {
 		k3.x = this.x + 2 * this.danSize;
 		k3.y = this.y + this.bossSize;
 		k3.color = '#050505';
-		k3.incX = 0;
+		k3.incX = this.randomMove();
 		k3.incY = this.speedY;
 		this.dan.unshift(k3);
 
@@ -114,7 +124,7 @@ var boss1 = function(bullet) {
 		k4.x = this.x + 3 * this.danSize;
 		k4.y = this.y + this.bossSize;
 		k4.color = '#050505';
-		k4.incX = 1;
+		k4.incX = this.randomMove();
 		k4.incY = this.speedY;
 		this.dan.unshift(k4);
 
@@ -122,14 +132,25 @@ var boss1 = function(bullet) {
 		k5.x = this.x + 4 * this.danSize;
 		k5.y = this.y + this.bossSize;
 		k5.color = '#050505';
-		k5.incX = 2;
+		k5.incX = this.randomMove();
 		k5.incY = this.speedY;
 		this.dan.unshift(k5);
 	}
 
 	this.drawBlood = function() {
-		this.game.context.fillStyle = '#36EA03';
-		this.game.context.fillRect(this.x, this.y - 10, this.unitBlood * this.blood, 5);
+		if(this.blood <= 300) {
+			this.game.context.fillStyle = '#ff0000';
+		}
+		else if(this.blood <= 600) {
+			this.game.context.fillStyle = '#ffe000';
+		}
+		else if(this.blood <= 900) {
+			this.game.context.fillStyle = '#6eff00';
+		}
+		else {
+			this.game.context.fillStyle = '#306905';
+		}
+		this.game.context.fillRect(this.x, this.y - 10, this.unitBlood * this.blood, 7);
 	}
 
 	this.draw = function() {
