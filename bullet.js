@@ -15,7 +15,7 @@ var bullet = function(plane) {
 	this.empower = null;
 	this.gift = null;
 	this.isBoss = false;
-	this.timeToBoss = 225;
+	this.timeToBoss = 105;
 	this.boss = null;
 	this.boss1Score = 100;
 
