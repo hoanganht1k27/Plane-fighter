@@ -15,7 +15,7 @@ var bullet = function(plane) {
 	this.empower = null;
 	this.gift = null;
 	this.isBoss = false;
-	this.timeToBoss = 105;
+	this.timeToBoss = 50;
 	this.boss = null;
 	this.boss1Score = 100;
 
@@ -178,8 +178,10 @@ var bullet = function(plane) {
 		if(this.scoreInc == this.opponentLevel * this.opponentLevel * this.opponentLevel) {
 			this.opponentLevel++;
 			this.scoreInc = 0;	
-			this.gift = this.empower;
-			this.gift.new();
+			if(this.bulletLevel <= 8) {
+				this.gift = this.empower;
+				this.gift.new();
+			}
 		}
 	}
 

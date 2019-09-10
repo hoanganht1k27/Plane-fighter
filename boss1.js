@@ -16,7 +16,7 @@ var boss1 = function(bullet) {
 	this.danSize = 10;
 	this.speedY = 2;
 	this.waitingY = 0;
-	this.tpY = 80;
+	this.tpY = 60;
 	this.trajectory = new Array(-2, -1, 0, 1, 2);
 
 	this.init = function() {
